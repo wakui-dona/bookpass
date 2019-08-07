@@ -1,0 +1,71 @@
+.box1 {
+    text-align : center;
+    width: 130px; height: 25px;
+    padding: 0.5em 1em;
+    margin: 0 auto;
+    font-weight: bold;
+    color: #6091d3;/*文字色*/
+    background: #FFF;
+    border: solid 3px #6091d3;/*線*/
+    border-radius: 10px;/*角の丸み*/
+}
+.box1 p {
+    padding: 0;
+}
+
+.box2 {
+    text-align : center;
+    width: 130px; height: 25px;
+    padding: 0.5em 1em;
+    margin: 0 auto;
+    font-weight: bold;
+    color: #6091d3;/*文字色*/
+    background: #FFF;
+    border: solid 3px #6091d3;/*線*/
+    border-radius: 10px;/*角の丸み*/
+}
+.box2 p {
+    padding: 0;
+}
+
+.button_center{
+  text-align: center;
+}
+
+button{
+  font-size : 1.4em;
+  width: 100px;
+  height: 60px;
+  
+  background-color: #66CCCC;
+}
+
+textarea {
+  width: 270px;
+  height: 300px;
+}
+
+table{
+  border: solid 2px black;
+  margin: 0 auto;
+}
+
+table tr{
+  text-align: center;
+  
+}
+
+table th{
+  background-color : #66CCCC;
+  padding: 5px 25px;
+}
+table td{
+  border: solid 1px black;
+  padding: 5px 25px;
+}
+
+.text_center{
+  font-size: 1.5em;
+  text-align: center;
+  margin: 0 suto;
+}
