@@ -1,12 +1,8 @@
+const apiURL = "https://stg-bookpass-recommend-api.team-rec.jp/recommend.csv?user_id=0001759628&frame_id=9998&item_id=BT000026070107407401"
+
 var purchase_data = [];
 var reccomend_data = [];
-var p_list = [];
-var r_list3007 = [];
-var r_list3008 = [];
-var intersection = [];
 var tmp = [];
-var precision_3007_tmp, precision_3008_tmp, AP_3007_tmp, AP_3008_tmp, MPre_3007, MPre_3008, MAP_3007, MAP_3008;
-
 
 const MyComponent = {
   data() {
@@ -22,27 +18,28 @@ const MyComponent = {
       this.$emit('customSubmit', this.$data.text, this.$data.purchase_csv, this.$data.reccomend_csv);
     }
   },
-  template: `
+    template: `
     <form @submit="onSubmit">
+    	<div class="text_center">
     	<div style="display:inline-flex">
-    	<form1>
-      <div class="box1">
-      <br1>購買データ</br1></div>
-      <textarea v-model="$data.purchase_csv" placeholder="ActionID, UserID, ItemID"></textarea>
-      </form1>
-      <form2>
-      <div class="box2">
-      <br2>レコメンド</br2></div>
-      <textarea v-model="$data.reccomend_csv" placeholder="LogicNum, TargetItem, Rank, ReccomendItem"></textarea>
-      </form2>
+    		<form1>
+      		<div class="box1">
+      			<br1>購買データ</br1></div>
+      			<textarea v-model="$data.purchase_csv" placeholder="ActionID, UserID, ItemID"></textarea>
+      	</form1>
+      	<form2>
+      		<div class="box2">
+      		<br2>レコメンド</br2></div>
+      		<textarea v-model="$data.reccomend_csv" placeholder="LogicNum, TargetItem, Rank, ReccomendItem"></textarea>
+      	</form2>
       </div>
-    	<p> User ID :
-      <input v-model="$data.text" placeholder=　"UserID" type="text" /></p>
-      <div class="button_center">
-      <button type="submit">OK</button1>
+    		<p> User ID :
+      	<input v-model="$data.text" placeholder=　"UserID" type="text" /></p>
+      	<div class="button_center">
+      		<button type="submit">OK</button1>
+      	</div>
       </div>
-    </form>
-    
+    </form>    
   `
 };
 
@@ -61,22 +58,19 @@ new Vue({
       p_csv:[],
       r_csv: [],
       p_list: [],
-      r_list3007: [],
-      r_list3008: [],
-      intersection: [],
+      r_list_tmp: [],
+      r_list: [],
+      r_list_tmp_tmp: [],
+      logic_list: [],
       tmp: [],
       counter : 0,
-      precision_3007_tmp : 0, 
-      precision_3008_tmp : 0,
-      AP_3007_tmp : 0,
-      AP_3008_tmp : 0,
-      MPre_3007 : 0,
-      MAP_3007 : 0,
-      MPre_3008 : 0,
-      MAP_3008 : 0,
+      precision_tmp : 0, 
+      AP_tmp : 0,
+      MPre : [],
+      MAP : [],
     };
   },
-  methods: {
+    methods: {
     onSubmit(text,purchase_csv,reccomend_csv) {
     	this.p_csv = purchase_csv.split('\n');
       for(var i=0;i<this.p_csv.length;i++){
@@ -86,97 +80,81 @@ new Vue({
       for(var i=0;i<this.r_csv.length;i++){
       	this.reccomend_data.push(this.r_csv[i].split(","))
       }
-      
-    	for (var x=0;x<(purchase_data.length-10);x++){
-      this.tmp=[];
-    	this.$data.p_list.push([])
-    	this.$data.p_list[x].push(purchase_data[x][2]);
-      for(var i = 1 ; i<12 ; i++){
-      	if(Number(purchase_data[i][1]) == text){
-        	this.tmp.push(purchase_data[i][2])
-        }
+      for(var i=0;i<reccomend_data.length;i++){
+      	this.logic_list.push(this.reccomend_data[i][0])
       }
-      this.$data.p_list[x].push(this.tmp);
+	var set = new Set(this.logic_list);
+	this.logic_list = Array.from(set)
+
+	for (var x = 0 ; x < (purchase_data.length-10) ; x++){
+      	this.tmp=[];
+    		this.$data.p_list.push([])
+    		this.$data.p_list[x].push(purchase_data[x][2]);
+      	for(var i = 1 ; i < purchase_data.length ; i++){
+      		if(Number(purchase_data[i][1]) == text){
+        		this.tmp.push(purchase_data[i][2])
+        	}
+      	}
+      	this.$data.p_list[x].push(this.tmp);
       
-      for(var i = 0 ; i<reccomend_data.length; i++){
-      	if(reccomend_data[i][0] == "3007" && reccomend_data[i][1]==this.p_list[x][0]){
-      		this.$data.r_list3007.push(reccomend_data[i][3])
-        }
-      }
+      	for(var logic = 0 ; logic<this.logic_list.length ; logic++){
+      		for(var i = 0 ; i < reccomend_data.length ; i++){
+      			if(reccomend_data[i][0] == this.logic_list[logic] && reccomend_data[i][1] == this.p_list[x][0]){
+      				this.$data.r_list_tmp.push(reccomend_data[i][3]);
+        		}
+      		}
+      		this.r_list_tmp_tmp.push(this.$data.r_list_tmp);
+      		this.$data.r_list_tmp = [];
+      	}
       
-      for(var i = 0 ; i<reccomend_data.length; i++){
-      	if(Number(reccomend_data[i][0]) == 3008 && reccomend_data[i][1]==this.p_list[x][0]){
-      	this.$data.r_list3008.push(reccomend_data[i][3])
-        }
-      }
+      	this.r_list.push(this.$data.r_list_tmp_tmp);
+      	this.$data.r_list_tmp_tmp = [];
+      	}
+
+	for(var logic = 0 ; logic < this.logic_list.length ; logic++){
+      		for(var x = 0 ; x < this.p_list.length ; x++){
+      		//Caluculate_Precision and AP 1loop
+     				this.counter = 0;
+      			this.AP_tmp = 0;
+      			for(var j = 0 ; j < 10 ; j++){
+      				if(this.p_list[x][1].includes( this.r_list[x][logic][j] )){
+        				this.counter += 1;
+          			this.AP_tmp += this.counter / (j+1);
+        			}
+     				}
+     				this.precision_tmp = this.counter/10;
+      			this.AP_tmp /= this.counter;
+      			//1loop Fin
       
-      }
+      			this.MPre.push(0);
+      			this.MPre[logic] += this.precision_tmp;
+      			this.MAP.push(0);
+      			this.MAP[logic] += this.AP_tmp;
+      		}
+      //loop　no owari
+      		this.MPre[logic] /= this.p_list.length
+     
+      		this.MAP[logic] /= this.p_list.length
       
-      for(var x=0;x<this.p_list.length; x++){
-      //Caluculate_Precision and AP sono1
-      this.counter = 0;
-      this.AP_3007_tmp = 0;
-      for(var j = x*10;j<x*10+10; j++){
-      	if(this.p_list[x][1].includes( this.r_list3007[j] )){
-        	//this.intersection.push(this.r_list3007[j]);
-        	this.counter += 1;
-          this.AP_3007_tmp += this.counter/(j+1-x*10);
-        }
-     	}
-     	this.precision_3007_tmp = this.counter/10;
-      this.AP_3007_tmp /= this.counter;
-      
-      this.counter = 0;
-      this.AP_3008_tmp = 0;
-      for(var j = x*10;j<x*10+10; j++){
-      	if(this.p_list[x][1].includes( this.r_list3008[j] )){
-        	//this.intersection.push(this.r_list3008[j]);
-        	this.counter += 1;
-          this.AP_3008_tmp += this.counter/(j+1-x*10);
-        }
-     	}
-     	this.precision_3008_tmp = this.counter/10;
-      this.AP_3008_tmp /= this.counter;
-      //sono1 Fin
-      
-      this.MPre_3007 += this.precision_3007_tmp;
-      this.MAP_3007 += this.AP_3007_tmp;
-      this.MPre_3008 += this.precision_3008_tmp;
-      this.MAP_3008 += this.AP_3008_tmp;
-      }//loop　no owari
-      
-      this.MPre_3007 /= this.p_list.length
-      this.MPre_3008 /= this.p_list.length
-      this.MAP_3007 /= this.p_list.length
-      this.MAP_3008 /= this.p_list.length
-      
-    }
-  },
-  template: `
+      	}
+    	}
+    },
+
+    template: `
     <div>
       <MyComponent
         @customSubmit="onSubmit"
       />
-<div class="text_center"><p>↓↓↓　結果　↓↓↓</p></div>
-<table border = "1">
-  <tr>
-    <th>指標</th> <th>ロジック</th> <th>スコア</th>
-  </tr>
+			<div class="text_center"><p>↓↓↓　結果　↓↓↓</p></div>
+			<table border = "1">
+				<tr>
+    			<th>ロジック</th> <th>Precision</th> <th>MAP</th>
+  			</tr>
 
-  <tr>
-    <td rowspan="2">Precision</td> <td>3007</td> <td> {{ MPre_3007 }} </td>
-  </tr>
-
-  <tr>
-    <td>3008</td> <td> {{MAP_3007}} </td>
-  </tr>
-  <tr>
-    <td rowspan="2">MAP</td> <td>3007</td> <td> {{MPre_3008}} </td>
-  </tr>
-
-  <tr>
-    <td>3008</td> <td> {{MAP_3008}} </td>
-  </tr>
-</table>
+				<tr v-for="(logic_num, index) in logic_list">
+    			<td>{{ logic_num }} </td> <td> {{ MPre[index] }} </td> <td> {{MAP[index]}} </td>
+  			</tr>
+  
+			</table>
   `
 });

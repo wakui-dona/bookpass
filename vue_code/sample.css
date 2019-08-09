@@ -1,7 +1,7 @@
 .box1 {
     text-align : center;
     width: 130px; height: 25px;
-    padding: 0.5em 1em;
+    padding: 0.8em 0.8em;
     margin: 0 auto;
     font-weight: bold;
     color: #6091d3;/*文字色*/
@@ -16,7 +16,7 @@
 .box2 {
     text-align : center;
     width: 130px; height: 25px;
-    padding: 0.5em 1em;
+    padding: 0.8em 0.8em;
     margin: 0 auto;
     font-weight: bold;
     color: #6091d3;/*文字色*/
@@ -39,7 +39,6 @@ button{
   
   background-color: #66CCCC;
 }
-
 textarea {
   width: 270px;
   height: 300px;
@@ -54,7 +53,6 @@ table tr{
   text-align: center;
   
 }
-
 table th{
   background-color : #66CCCC;
   padding: 5px 25px;
@@ -67,5 +65,5 @@ table td{
 .text_center{
   font-size: 1.5em;
   text-align: center;
-  margin: 0 suto;
+  margin: 0 auto;
 }
